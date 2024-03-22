@@ -1,4 +1,4 @@
-# DevOps Real-Time Automated Project
+# DevOps Real-World Automated Project
 
 ## Overview
 
