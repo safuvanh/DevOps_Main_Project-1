@@ -2,7 +2,7 @@
 <br><br>
 #### The above Terraform files will create 'Jenkins' & 'K8s' servers
 #### Master-Server --> Git, Maven, Docker, Trivy, Ansible
-#### Node-Server --> Docker, K8s (Kubeadm)
+#### Node-Server --> Cri-o, K8s (Kubeadm)
 
 ##### *NOTE*:
 1. Create a 'My_key.pem' from AWS EC2 console 
