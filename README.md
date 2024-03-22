@@ -42,23 +42,23 @@
    ![Screenshot (439)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/398aefe8-45d3-475d-a678-3a7bf8f221ff)<br><br>
   **- Establish passwordless connection between 'Master-Server' & 'Node-Server'**
 
-     ```
+      ```
       <Commands to run in 'Node-Server'>
-     sudo su -
-     passwd ubuntu                           # (set password)
-     vi /etc/ssh/sshd_config                 # (Allow 'PermitRootLogin yes' & allow 'PasswordAuthentication yes')
-     service sshd restart
+      sudo su -
+      passwd ubuntu                           # (set password)
+      vi /etc/ssh/sshd_config                 # (Allow 'PermitRootLogin yes' & allow 'PasswordAuthentication yes')
+      service sshd restart
 
-       <Commands to run in 'Master-Server'>
-     ssh-keygen                              # (this will generate ssh key, press enter when prompted)
-     ssh-copy-id ubuntu@<Node_Private_IP>    # (enter 'yes' when prompted & enter the Node's ubuntu password when prompted)
-     ```
+      <Commands to run in 'Master-Server'>
+      ssh-keygen                              # (this will generate ssh key, press enter when prompted)
+      ssh-copy-id ubuntu@<Node_Private_IP>    # (enter 'yes' when prompted & enter the Node's ubuntu password when prompted)
+      ```
  - **Note : if permission denied when copying ssh-id ,then copy the public key from `.ssh/id_rsa.pub`  and login in to Node-server  and navigate the directory `.ssh/authorized_keys` and save the public key here, corresponding private key needed for jenkins Credentials while remote login to node server**
       <br><br>
    ![Screenshot (443)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/fb425ae3-d0c1-4b79-8974-2473711d49c0)
  
 4. **Access Jenkins portal & add credentials in Jenkins portal as below:** <br><br>
-     ```
+     ``` 
       (Manage Jenkins --> Credentials --> System --> Global credentials)
 
      a. Dockerhub credentials - username & password (Use 'secret text' & save them separately)
@@ -69,17 +69,18 @@
        (Dockerhub: Account --> Settings --> Security --> Generate token & copy it)
 
      ```
-   ![Screenshot (444)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/5e2b4080-163c-419b-b5e2-103cd993747a)<br><br>
+    ![Screenshot (444)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/5e2b4080-163c-419b-b5e2-103cd993747a)<br><br>
 
  **- Add required plugins in Jenkins portal**
      
-     ```
+    ```
      (Manage Jenkins --> Plugins --> Available plugins --> 'ssh agent' --> Install)
      (This plugin is required to generate ssh agent syntax using pipeline syntax generator)
-     ```
-    ![Screenshot (445)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/8d03388e-4945-48e7-8556-ca6fc77b942f)<br>
-5. **Build Pipeline for Maven Build, Docker Image Build, and Deployment:** <br><br>
-    ![Screenshot (450)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/93b5e858-50da-4337-956b-c0d6dfda9670)
+    ```
+   ![Screenshot (445)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/8624c810-3a26-4159-8e97-1f316643c4f3)
+      <br>
+5. **Create Pipeline Job:** <br><br>
+   ![Screenshot (446)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/9d7b4bc3-4284-4569-9e05-7c08d2b0a4ad)
      <br><br>
     **- Configure Jenkins pipeline to:** <br>
       **- Perform Maven build from the master server.** <br>
@@ -88,13 +89,14 @@
       **- Deploy the application to the Kubernetes node via SSH agent.** <br>
       **- Apply Kubernetes manifest files.** <br>
       **- Expose the application via NodePort for access.** <br><br>
-    ![Screenshot (446)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/9d7b4bc3-4284-4569-9e05-7c08d2b0a4ad)<br><br>
+    
+   ![Screenshot (450)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/93b5e858-50da-4337-956b-c0d6dfda9670)<br><br>
   **- Run the pipeline** <br><br>
     ![Screenshot (448)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/04b76049-9a1c-4974-89fa-c80d51c3c3fc)
       <br><br>
     ![Screenshot (449)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/b457ccda-5f2a-45b7-9423-dc517d8fc0a5)<br>
-6. **Accessing the Application:** <br>
-    **- Once the deployment is successful, obtain the output to access the application.**
+6. **Accessing the Application:** <br><br>
+    **- Once the deployment is successful, obtain the output to access the application.** <br>
     **- Access the application using the NodePort** <br><br>
     ![Screenshot (452)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/c57a0023-a9ab-446e-aa6b-220952be40a6)<br><br>
     ![Screenshot (453)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/dfc957c9-0dd9-4b94-a0e7-127163049ca9)<br><br>
@@ -103,24 +105,26 @@
     ![image](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/84b3dae5-2232-45a2-9690-c3ad066b2a96)<br><br>
 
        
-    **- Automate the pipeline if any changes are pushed to Github**
+  **- Automate the pipeline if any changes are pushed to Github**
    
-        ```
+       ```
        (Webhook will be created in Github & trigger will be created in Jenkins)
        Jenkins --> Configure --> Build triggers --> 'Github hook trigger for GitSCM polling' --> Save
        Jenkins --> <Your_Account> --> Configure --> API Tokens --> <Jenkins-API-Token>
        Github --> <Your-Repo> --> Settings --> Webhooks --> "<Jenkins-url>:8080/github-webhook/"; -->
        Content type: json;     Secret: <Jenkins-API-Token> --> Add Webhook
        (Try making any changes in your code & the pipeline should automatically trigger)
-        ```
+       ```
+       
+  ![Screenshot (456)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/f9545d91-564e-44d8-b65d-0775dd907c9e)
        <br><br>
-    ![Screenshot (456)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/f9545d91-564e-44d8-b65d-0775dd907c9e)
-       <br><br>
-    ![Screenshot (457)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/ae5bd8b7-c963-4a71-b31f-d2d6a5b88dda)
+  ![Screenshot (457)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/ae5bd8b7-c963-4a71-b31f-d2d6a5b88dda)
        <br>
- 8. **Destroy all**
+ ## Destroy all
 
-    ![Screenshot (458)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/1f486feb-8013-4251-8bec-b7137a935f9c)
+  **- terraform destroy**
+
+  ![Screenshot (458)](https://github.com/safuvanh/DevOps_Main_Project-1/assets/156053146/1f486feb-8013-4251-8bec-b7137a935f9c)
    
   ## Conclusion
 
